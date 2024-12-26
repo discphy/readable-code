@@ -26,3 +26,5 @@
 
 ## Early return
 + Early return으로 else의 사용을 지양
+
+> 메서드 리팩토링 시, 메서드 복제 방법을 이용하면 용이하다.
