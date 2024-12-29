@@ -28,3 +28,11 @@
 + Early return으로 else의 사용을 지양
 
 > 메서드 리팩토링 시, 메서드 복제 방법을 이용하면 용이하다.
+
+## 해피 케이스와 예외 처리 
+
+### Null을 대하는 자세 
+
++ Optional 주의
+  + `orElse(performanceHeavy())` : `performanceHeavy()`를 호출할 필요가 없는 경우에도 항상 실행 
+  + `orElseGet(() -> performanceHeavy())` : `() -> performanceHeavy()` null인 경우에만 실행
