@@ -6,7 +6,7 @@ import cleancode.studycafe.mine.io.OutputHandler;
 import cleancode.studycafe.mine.io.StudyCafeFileHandler;
 import cleancode.studycafe.mine.model.StudyCafeLockerPass;
 import cleancode.studycafe.mine.model.StudyCafePass;
-import cleancode.studycafe.tobe.model.StudyCafePassType;
+import cleancode.studycafe.mine.model.StudyCafePassType;
 
 import java.util.List;
 
