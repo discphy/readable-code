@@ -1,8 +1,8 @@
 package cleancode.studycafe.mine;
 
 import cleancode.studycafe.mine.exception.AppException;
-import cleancode.studycafe.mine.io.InputHandler;
-import cleancode.studycafe.mine.io.OutputHandler;
+import cleancode.studycafe.mine.io.ConsoleInputHandler;
+import cleancode.studycafe.mine.io.ConsoleOutputHandler;
 import cleancode.studycafe.mine.io.StudyCafeFileHandler;
 import cleancode.studycafe.mine.model.StudyCafeLockerPass;
 import cleancode.studycafe.mine.model.StudyCafePass;
@@ -12,8 +12,8 @@ import java.util.List;
 
 public class StudyCafePassMachine {
 
-    private final InputHandler inputHandler = new InputHandler();
-    private final OutputHandler outputHandler = new OutputHandler();
+    private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
+    private final ConsoleOutputHandler consoleOutputHandler = new ConsoleOutputHandler();
 
     private final List<StudyCafePass> studyCafePasses;
     private final List<StudyCafeLockerPass> lockerPasses;
@@ -26,8 +26,8 @@ public class StudyCafePassMachine {
 
     public void run() {
         try {
-            outputHandler.showWelcomeMessage();
-            outputHandler.showAnnouncement();
+            consoleOutputHandler.showWelcomeMessage();
+            consoleOutputHandler.showAnnouncement();
 
             StudyCafePassType studyCafePassType = selectedPassType();
             List<StudyCafePass> passes = filterPassesBy(studyCafePassType);
@@ -37,19 +37,19 @@ public class StudyCafePassMachine {
             StudyCafeLockerPass lockerPass = findLockerPassBy(selectedPass);
 
             if (lockerPass != null) {
-                outputHandler.askLockerPass(lockerPass);
-                lockerSelection = inputHandler.getLockerSelection();
+                consoleOutputHandler.askLockerPass(lockerPass);
+                lockerSelection = consoleInputHandler.getLockerSelection();
             }
 
             if (lockerSelection) {
-                outputHandler.showPassOrderSummary(selectedPass, lockerPass);
+                consoleOutputHandler.showPassOrderSummary(selectedPass, lockerPass);
             } else {
-                outputHandler.showPassOrderSummary(selectedPass, null);
+                consoleOutputHandler.showPassOrderSummary(selectedPass, null);
             }
         } catch (AppException e) {
-            outputHandler.showSimpleMessage(e.getMessage());
+            consoleOutputHandler.showSimpleMessage(e.getMessage());
         } catch (Exception e) {
-            outputHandler.showSimpleMessage("알 수 없는 오류가 발생했습니다.");
+            consoleOutputHandler.showSimpleMessage("알 수 없는 오류가 발생했습니다.");
         }
     }
 
@@ -60,13 +60,13 @@ public class StudyCafePassMachine {
     }
 
     private StudyCafePassType selectedPassType() {
-        outputHandler.askPassTypeSelection();
-        return inputHandler.getPassTypeSelectingUserAction();
+        consoleOutputHandler.askPassTypeSelection();
+        return consoleInputHandler.getPassTypeSelectingUserAction();
     }
 
     private StudyCafePass selectedPass(List<StudyCafePass> passes) {
-        outputHandler.showPassListForSelection(passes);
-        return inputHandler.getSelectPass(passes);
+        consoleOutputHandler.showPassListForSelection(passes);
+        return consoleInputHandler.getSelectPass(passes);
     }
 
     private StudyCafeLockerPass findLockerPassBy(StudyCafePass selectedPass) {
