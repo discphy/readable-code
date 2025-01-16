@@ -3,8 +3,8 @@ package cleancode.studycafe.mine.io;
 import cleancode.studycafe.mine.exception.AppException;
 import cleancode.studycafe.mine.model.StudyCafePass;
 import cleancode.studycafe.mine.model.StudyCafePassType;
+import cleancode.studycafe.mine.model.StudyCafePasses;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleInputHandler {
@@ -26,10 +26,10 @@ public class ConsoleInputHandler {
         throw new AppException("잘못된 입력입니다.");
     }
 
-    public StudyCafePass getSelectPass(List<StudyCafePass> passes) {
+    public StudyCafePass getSelectPass(StudyCafePasses passes) {
         String userInput = SCANNER.nextLine();
         int selectedIndex = Integer.parseInt(userInput) - 1;
-        return passes.get(selectedIndex);
+        return passes.findPassByIndex(selectedIndex);
     }
 
     public boolean getLockerSelection() {

@@ -30,22 +30,14 @@ public class StudyCafePassMachine {
             consoleOutputHandler.showAnnouncement();
 
             StudyCafePassType studyCafePassType = selectedPassType();
-            List<StudyCafePass> passes = filterPassesBy(studyCafePassType);
+            StudyCafePasses passes = filterPassesBy(studyCafePassType);
             StudyCafePass selectedPass = selectedPass(passes);
             boolean lockerSelection = false;
 
             StudyCafeLockerPass lockerPass = findLockerPassBy(selectedPass);
 
-            if (lockerPass != null) {
-                consoleOutputHandler.askLockerPass(lockerPass);
-                lockerSelection = consoleInputHandler.getLockerSelection();
-            }
-
-            if (lockerSelection) {
-                consoleOutputHandler.showPassOrderSummary(selectedPass, lockerPass);
-            } else {
-                consoleOutputHandler.showPassOrderSummary(selectedPass, null);
-            }
+            StudyCafeLockerPass lockerPass = selectedLockerPassBy(selectedPass);
+            consoleOutputHandler.showPassOrderSummary(selectedPass, lockerPass);
         } catch (AppException e) {
             consoleOutputHandler.showSimpleMessage(e.getMessage());
         } catch (Exception e) {
@@ -53,10 +45,11 @@ public class StudyCafePassMachine {
         }
     }
 
-    private List<StudyCafePass> filterPassesBy(StudyCafePassType passType) {
-        return studyCafePasses.stream()
+    private StudyCafePasses filterPassesBy(StudyCafePassType passType) {
+        List<StudyCafePass> filteredPasses = studyCafePasses.stream()
                 .filter(studyCafePass -> studyCafePass.getPassType() == passType)
                 .toList();
+        return StudyCafePasses.of(filteredPasses);
     }
 
     private StudyCafePassType selectedPassType() {
@@ -64,7 +57,7 @@ public class StudyCafePassMachine {
         return consoleInputHandler.getPassTypeSelectingUserAction();
     }
 
-    private StudyCafePass selectedPass(List<StudyCafePass> passes) {
+    private StudyCafePass selectedPass(StudyCafePasses passes) {
         consoleOutputHandler.showPassListForSelection(passes);
         return consoleInputHandler.getSelectPass(passes);
     }
