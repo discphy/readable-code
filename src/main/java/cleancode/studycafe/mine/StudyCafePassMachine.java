@@ -4,10 +4,10 @@ import cleancode.studycafe.mine.exception.AppException;
 import cleancode.studycafe.mine.io.ConsoleInputHandler;
 import cleancode.studycafe.mine.io.ConsoleOutputHandler;
 import cleancode.studycafe.mine.io.StudyCafeFileHandler;
-import cleancode.studycafe.mine.model.StudyCafeLockerPass;
-import cleancode.studycafe.mine.model.StudyCafePass;
-import cleancode.studycafe.mine.model.StudyCafePassType;
-import cleancode.studycafe.mine.model.StudyCafePasses;
+import cleancode.studycafe.mine.pass.StudyCafeLockerPass;
+import cleancode.studycafe.mine.pass.StudyCafePass;
+import cleancode.studycafe.mine.pass.StudyCafePassType;
+import cleancode.studycafe.mine.pass.StudyCafePasses;
 
 import java.util.List;
 

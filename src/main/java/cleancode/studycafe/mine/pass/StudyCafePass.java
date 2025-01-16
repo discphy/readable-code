@@ -1,27 +1,37 @@
-package cleancode.studycafe.mine.model;
+package cleancode.studycafe.mine.pass;
 
-public class StudyCafeLockerPass {
+public class StudyCafePass {
 
     private final StudyCafePassType passType;
     private final int duration;
     private final int price;
+    private final double discountRate;
 
-    private StudyCafeLockerPass(StudyCafePassType passType, int duration, int price) {
+    private StudyCafePass(StudyCafePassType passType, int duration, int price, double discountRate) {
         this.passType = passType;
         this.duration = duration;
         this.price = price;
+        this.discountRate = discountRate;
     }
 
-    public static StudyCafeLockerPass of(StudyCafePassType passType, int duration, int price) {
-        return new StudyCafeLockerPass(passType, duration, price);
+    public static StudyCafePass of(StudyCafePassType passType, int duration, int price, double discountRate) {
+        return new StudyCafePass(passType, duration, price, discountRate);
     }
 
-    public boolean isSelectable(StudyCafePass pass) {
-        return pass.isEqualType(passType) && pass.isEqualDuration(duration);
+    public boolean isEqualType(StudyCafePassType passType) {
+        return this.passType == passType;
+    }
+
+    public boolean isEqualDuration(int duration) {
+        return this.duration == duration;
     }
 
     public int getPrice() {
         return price;
+    }
+
+    public double getDiscountRate() {
+        return discountRate;
     }
 
     public String display() {
@@ -36,5 +46,4 @@ public class StudyCafeLockerPass {
         }
         return "";
     }
-
 }
