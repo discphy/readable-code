@@ -7,6 +7,7 @@ import cleancode.studycafe.mine.io.StudyCafeFileHandler;
 import cleancode.studycafe.mine.model.StudyCafeLockerPass;
 import cleancode.studycafe.mine.model.StudyCafePass;
 import cleancode.studycafe.mine.model.StudyCafePassType;
+import cleancode.studycafe.mine.model.StudyCafePasses;
 
 import java.util.List;
 
@@ -32,9 +33,6 @@ public class StudyCafePassMachine {
             StudyCafePassType studyCafePassType = selectedPassType();
             StudyCafePasses passes = filterPassesBy(studyCafePassType);
             StudyCafePass selectedPass = selectedPass(passes);
-            boolean lockerSelection = false;
-
-            StudyCafeLockerPass lockerPass = findLockerPassBy(selectedPass);
 
             StudyCafeLockerPass lockerPass = selectedLockerPassBy(selectedPass);
             consoleOutputHandler.showPassOrderSummary(selectedPass, lockerPass);
@@ -62,6 +60,16 @@ public class StudyCafePassMachine {
         return consoleInputHandler.getSelectPass(passes);
     }
 
+    private StudyCafeLockerPass selectedLockerPassBy(StudyCafePass selectedPass) {
+        StudyCafeLockerPass lockerPass = findLockerPassBy(selectedPass);
+
+        if (doesLockerSelection(lockerPass)) {
+            return lockerPass;
+        }
+
+        return null;
+    }
+
     private StudyCafeLockerPass findLockerPassBy(StudyCafePass selectedPass) {
         if (selectedPass.isEqualType(StudyCafePassType.FIXED)) {
             return null;
@@ -71,6 +79,15 @@ public class StudyCafePassMachine {
                 .filter(option -> option.isSelectable(selectedPass))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private boolean doesLockerSelection(StudyCafeLockerPass lockerPass) {
+        if (lockerPass == null) {
+            return false;
+        }
+
+        consoleOutputHandler.askLockerPass(lockerPass);
+        return consoleInputHandler.getLockerSelection();
     }
 
 }

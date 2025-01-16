@@ -19,6 +19,10 @@ public class StudyCafePasses {
     }
 
     public StudyCafePass findPassByIndex(int index) {
-        return passes.get(index);
+        return copyPasses().get(index);
+    }
+
+    private List<StudyCafePass> copyPasses() {
+        return List.copyOf(passes);
     }
 }
