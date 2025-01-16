@@ -18,12 +18,12 @@ public class StudyCafePass {
         return new StudyCafePass(passType, duration, price, discountRate);
     }
 
-    public StudyCafePassType getPassType() {
-        return passType;
+    public boolean isEqualType(StudyCafePassType passType) {
+        return this.passType == passType;
     }
 
-    public int getDuration() {
-        return duration;
+    public boolean isEqualDuration(int duration) {
+        return this.duration == duration;
     }
 
     public int getPrice() {
@@ -46,5 +46,4 @@ public class StudyCafePass {
         }
         return "";
     }
-
 }
