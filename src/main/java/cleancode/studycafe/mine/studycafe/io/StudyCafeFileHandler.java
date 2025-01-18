@@ -1,58 +1,42 @@
 package cleancode.studycafe.mine.studycafe.io;
 
-import cleancode.studycafe.mine.studycafe.pass.StudyCafeLockerPass;
-import cleancode.studycafe.mine.studycafe.pass.StudyCafePass;
-import cleancode.studycafe.mine.studycafe.pass.StudyCafePassType;
+import cleancode.studycafe.mine.studycafe.pass.item.StudyCafeLockerPassItems;
+import cleancode.studycafe.mine.studycafe.pass.item.StudyCafePassItems;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 public class StudyCafeFileHandler implements FileHandler {
 
+    public static final String ITEMS_FILE_DIRECTORY_PATH = "src/main/resources/cleancode/studycafe/";
+    public static final String PASS_ITEMS_FILE_NAME = "pass-list";
+    public static final String LOCKER_PASS_ITEMS_FILE_NAME = "locker";
+
     @Override
-    public List<StudyCafePass> readStudyCafePasses() {
+    public StudyCafePassItems readPasses() {
+        List<String> lines = readPassItemLines(PASS_ITEMS_FILE_NAME);
+        return StudyCafePassItems.of(lines);
+    }
+
+    @Override
+    public StudyCafeLockerPassItems readLockerPasses() {
+        List<String> lines = readPassItemLines(LOCKER_PASS_ITEMS_FILE_NAME);
+        return StudyCafeLockerPassItems.of(lines);
+    }
+
+    private List<String> readPassItemLines(String fileName) {
         try {
-            List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/pass-list.csv"));
-            List<StudyCafePass> studyCafePasses = new ArrayList<>();
-            for (String line : lines) {
-                String[] values = line.split(",");
-                StudyCafePassType studyCafePassType = StudyCafePassType.valueOf(values[0]);
-                int duration = Integer.parseInt(values[1]);
-                int price = Integer.parseInt(values[2]);
-                double discountRate = Double.parseDouble(values[3]);
-
-                StudyCafePass studyCafePass = StudyCafePass.of(studyCafePassType, duration, price, discountRate);
-                studyCafePasses.add(studyCafePass);
-            }
-
-            return studyCafePasses;
+            Path path = getFilePath(fileName);
+            return Files.readAllLines(path);
         } catch (IOException e) {
             throw new RuntimeException("파일을 읽는데 실패했습니다.", e);
         }
     }
 
-    @Override
-    public List<StudyCafeLockerPass> readLockerPasses() {
-        try {
-            List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/locker.csv"));
-            List<StudyCafeLockerPass> lockerPasses = new ArrayList<>();
-            for (String line : lines) {
-                String[] values = line.split(",");
-                StudyCafePassType studyCafePassType = StudyCafePassType.valueOf(values[0]);
-                int duration = Integer.parseInt(values[1]);
-                int price = Integer.parseInt(values[2]);
-
-                StudyCafeLockerPass lockerPass = StudyCafeLockerPass.of(studyCafePassType, duration, price);
-                lockerPasses.add(lockerPass);
-            }
-
-            return lockerPasses;
-        } catch (IOException e) {
-            throw new RuntimeException("파일을 읽는데 실패했습니다.", e);
-        }
+    private Path getFilePath(String fileName) {
+        return Paths.get(ITEMS_FILE_DIRECTORY_PATH + fileName + ".csv");
     }
-
 }

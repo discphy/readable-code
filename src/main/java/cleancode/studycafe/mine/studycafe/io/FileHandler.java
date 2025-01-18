@@ -1,12 +1,11 @@
 package cleancode.studycafe.mine.studycafe.io;
 
-import cleancode.studycafe.mine.studycafe.pass.StudyCafeLockerPass;
-import cleancode.studycafe.mine.studycafe.pass.StudyCafePass;
-
-import java.util.List;
+import cleancode.studycafe.mine.studycafe.pass.item.StudyCafeLockerPassItems;
+import cleancode.studycafe.mine.studycafe.pass.item.StudyCafePassItems;
 
 public interface FileHandler {
-    List<StudyCafePass> readStudyCafePasses();
 
-    List<StudyCafeLockerPass> readLockerPasses();
+    StudyCafePassItems readPasses();
+
+    StudyCafeLockerPassItems readLockerPasses();
 }

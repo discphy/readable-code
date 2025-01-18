@@ -4,13 +4,16 @@ import cleancode.studycafe.mine.cafe.CafeInitializable;
 import cleancode.studycafe.mine.cafe.CafeRunnable;
 import cleancode.studycafe.mine.studycafe.config.CafeConfig;
 import cleancode.studycafe.mine.studycafe.exception.AppException;
-import cleancode.studycafe.mine.studycafe.io.*;
+import cleancode.studycafe.mine.studycafe.io.FileHandler;
+import cleancode.studycafe.mine.studycafe.io.InputHandler;
+import cleancode.studycafe.mine.studycafe.io.OutputHandler;
 import cleancode.studycafe.mine.studycafe.pass.StudyCafeLockerPass;
 import cleancode.studycafe.mine.studycafe.pass.StudyCafePass;
 import cleancode.studycafe.mine.studycafe.pass.StudyCafePassType;
 import cleancode.studycafe.mine.studycafe.pass.StudyCafePasses;
-
-import java.util.List;
+import cleancode.studycafe.mine.studycafe.pass.item.StudyCafeLockerPassItems;
+import cleancode.studycafe.mine.studycafe.pass.item.StudyCafePassItems;
+import cleancode.studycafe.mine.studycafe.pass.order.StudyCafePassOrder;
 
 public class StudyCafePassMachine implements CafeInitializable, CafeRunnable {
 
@@ -18,8 +21,8 @@ public class StudyCafePassMachine implements CafeInitializable, CafeRunnable {
     private final OutputHandler outputHandler;
     private final FileHandler fileHandler;
 
-    private List<StudyCafePass> studyCafePasses;
-    private List<StudyCafeLockerPass> lockerPasses;
+    private StudyCafePassItems studyCafePassesItems;
+    private StudyCafeLockerPassItems lockerPassesItems;
 
     public StudyCafePassMachine(CafeConfig config) {
         this.inputHandler = config.getInputHandler();
@@ -29,8 +32,8 @@ public class StudyCafePassMachine implements CafeInitializable, CafeRunnable {
 
     @Override
     public void initialize() {
-        studyCafePasses = fileHandler.readStudyCafePasses();
-        lockerPasses = fileHandler.readLockerPasses();
+        studyCafePassesItems = fileHandler.readPasses();
+        lockerPassesItems = fileHandler.readLockerPasses();
     }
 
     @Override
@@ -39,12 +42,12 @@ public class StudyCafePassMachine implements CafeInitializable, CafeRunnable {
             outputHandler.showWelcomeMessage();
             outputHandler.showAnnouncement();
 
-            StudyCafePassType studyCafePassType = selectedPassType();
-            StudyCafePasses passes = filterPassesBy(studyCafePassType);
-            StudyCafePass selectedPass = selectedPass(passes);
+            StudyCafePassType selectedPassType = selectedPassType();
+            StudyCafePass selectedPass = selectedPass(selectedPassType);
+            StudyCafeLockerPass selectedLockerPass = selectedLockerPass(selectedPass);
 
-            StudyCafeLockerPass lockerPass = selectedLockerPassBy(selectedPass);
-            outputHandler.showPassOrderSummary(selectedPass, lockerPass);
+            StudyCafePassOrder order = StudyCafePassOrder.of(selectedPass, selectedLockerPass);
+            outputHandler.showPassOrderSummary(order);
         } catch (AppException e) {
             outputHandler.showSimpleMessage(e.getMessage());
         } catch (Exception e) {
@@ -52,50 +55,26 @@ public class StudyCafePassMachine implements CafeInitializable, CafeRunnable {
         }
     }
 
-    private StudyCafePasses filterPassesBy(StudyCafePassType passType) {
-        List<StudyCafePass> filteredPasses = studyCafePasses.stream()
-                .filter(studyCafePass -> studyCafePass.isEqualType(passType))
-                .toList();
-        return StudyCafePasses.of(filteredPasses);
-    }
-
     private StudyCafePassType selectedPassType() {
         outputHandler.askPassTypeSelection();
         return inputHandler.getPassTypeSelectingUserAction();
     }
 
-    private StudyCafePass selectedPass(StudyCafePasses passes) {
-        outputHandler.showPassListForSelection(passes);
-        return inputHandler.getSelectPass(passes);
+    private StudyCafePass selectedPass(StudyCafePassType passType) {
+        StudyCafePasses selectablePasses = studyCafePassesItems.selectablePasses(passType);
+
+        outputHandler.showPassListForSelection(selectablePasses);
+        return inputHandler.getSelectPass(selectablePasses);
     }
 
-    private StudyCafeLockerPass selectedLockerPassBy(StudyCafePass selectedPass) {
-        StudyCafeLockerPass lockerPass = findLockerPassBy(selectedPass);
+    private StudyCafeLockerPass selectedLockerPass(StudyCafePass selectedPass) {
+        StudyCafeLockerPass selectableLockerPass = lockerPassesItems.selectableLockerPass(selectedPass);
 
-        if (doesLockerSelection(lockerPass)) {
-            return lockerPass;
-        }
-
-        return null;
-    }
-
-    private StudyCafeLockerPass findLockerPassBy(StudyCafePass selectedPass) {
-        if (selectedPass.isEqualType(StudyCafePassType.FIXED)) {
+        if (selectableLockerPass == null) {
             return null;
         }
 
-        return lockerPasses.stream()
-                .filter(option -> option.isSelectable(selectedPass))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private boolean doesLockerSelection(StudyCafeLockerPass lockerPass) {
-        if (lockerPass == null) {
-            return false;
-        }
-
-        outputHandler.askLockerPass(lockerPass);
-        return inputHandler.getLockerSelection();
+        outputHandler.askLockerPass(selectableLockerPass);
+        return inputHandler.getLockerSelection() ? selectableLockerPass : null;
     }
 }
