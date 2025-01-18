@@ -1,8 +1,8 @@
-package cleancode.studycafe.mine.io;
+package cleancode.studycafe.mine.studycafe.io;
 
-import cleancode.studycafe.mine.pass.StudyCafeLockerPass;
-import cleancode.studycafe.mine.pass.StudyCafePass;
-import cleancode.studycafe.mine.pass.StudyCafePassType;
+import cleancode.studycafe.mine.studycafe.pass.StudyCafeLockerPass;
+import cleancode.studycafe.mine.studycafe.pass.StudyCafePass;
+import cleancode.studycafe.mine.studycafe.pass.StudyCafePassType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,8 +10,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudyCafeFileHandler {
+public class StudyCafeFileHandler implements FileHandler {
 
+    @Override
     public List<StudyCafePass> readStudyCafePasses() {
         try {
             List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/pass-list.csv"));
@@ -33,6 +34,7 @@ public class StudyCafeFileHandler {
         }
     }
 
+    @Override
     public List<StudyCafeLockerPass> readLockerPasses() {
         try {
             List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/locker.csv"));
