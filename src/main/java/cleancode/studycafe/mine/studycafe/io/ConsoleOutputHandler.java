@@ -3,6 +3,9 @@ package cleancode.studycafe.mine.studycafe.io;
 import cleancode.studycafe.mine.studycafe.pass.StudyCafeLockerPass;
 import cleancode.studycafe.mine.studycafe.pass.StudyCafePass;
 import cleancode.studycafe.mine.studycafe.pass.StudyCafePasses;
+import cleancode.studycafe.mine.studycafe.pass.order.StudyCafePassOrder;
+
+import static java.util.stream.IntStream.range;
 
 public class ConsoleOutputHandler implements OutputHandler {
 
@@ -28,10 +31,9 @@ public class ConsoleOutputHandler implements OutputHandler {
     public void showPassListForSelection(StudyCafePasses passes) {
         System.out.println();
         System.out.println("이용권 목록");
-        for (int index = 0; index < passes.size(); index++) {
-            StudyCafePass pass = passes.findPassByIndex(index);
-            System.out.println(String.format("%s. ", index + 1) + pass.display());
-        }
+
+        range(0, passes.size())
+                .forEach(index -> showPassForSelection(index, passes));
     }
 
     @Override
@@ -47,21 +49,20 @@ public class ConsoleOutputHandler implements OutputHandler {
     }
 
     @Override
-    public void showPassOrderSummary(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
+    public void showPassOrderSummary(StudyCafePassOrder order) {
         System.out.println();
         System.out.println("이용 내역");
-        System.out.println("이용권: " + selectedPass.display());
-        if (lockerPass != null) {
-            System.out.println("사물함: " + lockerPass.display());
+        System.out.println("이용권: " + order.passDisplay());
+        if (order.containsLockerPass()) {
+            System.out.println("사물함: " + order.lockerPassDisplay());
         }
 
-        double discountRate = selectedPass.getDiscountRate();
-        int discountPrice = (int) (selectedPass.getPrice() * discountRate);
+        int discountPrice = order.discountPrice();
         if (discountPrice > 0) {
             System.out.println("이벤트 할인 금액: " + discountPrice + "원");
         }
 
-        int totalPrice = selectedPass.getPrice() - discountPrice + (lockerPass != null ? lockerPass.getPrice() : 0);
+        int totalPrice = order.totalPrice();
         System.out.println("총 결제 금액: " + totalPrice + "원");
         System.out.println();
     }
@@ -71,4 +72,8 @@ public class ConsoleOutputHandler implements OutputHandler {
         System.out.println(message);
     }
 
+    private void showPassForSelection(int index, StudyCafePasses passes) {
+        StudyCafePass pass = passes.findPassByIndex(index);
+        System.out.println(String.format("%s. ", index + 1) + pass.display());
+    }
 }

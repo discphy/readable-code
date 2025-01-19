@@ -1,15 +1,13 @@
 package cleancode.studycafe.mine.studycafe.pass;
 
+import cleancode.studycafe.mine.studycafe.pass.info.StudyCafePassInfo;
+
 public class StudyCafeLockerPass {
 
-    private final StudyCafePassType passType;
-    private final int duration;
-    private final int price;
+    private final StudyCafePassInfo info;
 
     private StudyCafeLockerPass(StudyCafePassType passType, int duration, int price) {
-        this.passType = passType;
-        this.duration = duration;
-        this.price = price;
+        info = StudyCafePassInfo.of(passType, duration, price);
     }
 
     public static StudyCafeLockerPass of(StudyCafePassType passType, int duration, int price) {
@@ -17,24 +15,14 @@ public class StudyCafeLockerPass {
     }
 
     public boolean isSelectable(StudyCafePass pass) {
-        return pass.isEqualType(passType) && pass.isEqualDuration(duration);
+        return info.isLockerSelectable(pass.getInfo());
     }
 
     public int getPrice() {
-        return price;
+        return info.getPrice();
     }
 
     public String display() {
-        if (passType == StudyCafePassType.HOURLY) {
-            return String.format("%s시간권 - %d원", duration, price);
-        }
-        if (passType == StudyCafePassType.WEEKLY) {
-            return String.format("%s주권 - %d원", duration, price);
-        }
-        if (passType == StudyCafePassType.FIXED) {
-            return String.format("%s주권 - %d원", duration, price);
-        }
-        return "";
+        return info.display();
     }
-
 }
