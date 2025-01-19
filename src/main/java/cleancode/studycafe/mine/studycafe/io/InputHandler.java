@@ -6,7 +6,6 @@ import cleancode.studycafe.mine.studycafe.pass.StudyCafePasses;
 
 public interface InputHandler {
 
-
     StudyCafePassType getPassTypeSelectingUserAction();
 
     StudyCafePass getSelectPass(StudyCafePasses passes);

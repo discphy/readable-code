@@ -24,6 +24,7 @@ public class ConsoleInputHandler implements InputHandler {
         if ("3".equals(userInput)) {
             return StudyCafePassType.FIXED;
         }
+
         throw new AppException("잘못된 입력입니다.");
     }
 
